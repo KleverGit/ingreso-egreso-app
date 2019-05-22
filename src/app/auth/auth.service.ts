@@ -3,18 +3,30 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { map } from 'rxjs/operators';
+import { UserModel } from './user.model';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private fireAuth: AngularFireAuth, private router: Router) { }
+  constructor(private fireAuth: AngularFireAuth, private router: Router,
+    private aFDB: AngularFirestore) { }
 
   crearUsuario(nombre: string, email: string, password: string) {
     this.fireAuth.auth.createUserWithEmailAndPassword(email, password).then(resp => {
-      // navegar al dashborad
-      this.router.navigate(['/']);
+      const user: UserModel = {
+        uid: resp.user.uid,
+        nombre: nombre,
+        email: resp.user.email
+      };
+
+      this.aFDB.doc(`${user.uid}/usuario`).set(user).then(resp => {
+        // navegar al dashborad
+        this.router.navigate(['/']);
+      });
+
     }).catch(err => {
       console.log(err);
       Swal.fire({
