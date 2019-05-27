@@ -5,6 +5,10 @@ import Swal from 'sweetalert2';
 import { map } from 'rxjs/operators';
 import { UserModel } from './user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducer';
+import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.actions';
+import { SetUserAction } from './auth.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +16,10 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class AuthService {
 
   constructor(private fireAuth: AngularFireAuth, private router: Router,
-    private aFDB: AngularFirestore) { }
+    private aFDB: AngularFirestore, private store: Store<AppState>) { }
 
   crearUsuario(nombre: string, email: string, password: string) {
+    this.store.dispatch(new ActivarLoadingAction);
     this.fireAuth.auth.createUserWithEmailAndPassword(email, password).then(resp => {
       const user: UserModel = {
         uid: resp.user.uid,
@@ -25,6 +30,7 @@ export class AuthService {
       this.aFDB.doc(`${user.uid}/usuario`).set(user).then(resp => {
         // navegar al dashborad
         this.router.navigate(['/']);
+        this.store.dispatch(new DesactivarLoadingAction);
       });
 
     }).catch(err => {
@@ -35,12 +41,15 @@ export class AuthService {
         type: 'error',
         confirmButtonText: 'Listo'
       });
+      this.store.dispatch(new DesactivarLoadingAction);
     });
   }
 
   login(email: string, password: string) {
+    this.store.dispatch(new ActivarLoadingAction);
     this.fireAuth.auth.signInWithEmailAndPassword(email, password).then(resp => {
       this.router.navigate(['/']);
+      this.store.dispatch(new DesactivarLoadingAction);
     }).catch(err => {
       console.log(err);
       Swal.fire({
@@ -49,6 +58,7 @@ export class AuthService {
         type: 'error',
         confirmButtonText: 'Listo'
       });
+      this.store.dispatch(new DesactivarLoadingAction);
     });
   }
 
@@ -69,7 +79,14 @@ export class AuthService {
 
   initAuthListener() {
     this.fireAuth.authState.subscribe(fuser => {
-      console.log('INIT LISTENER', fuser);
+      if (fuser) {
+        this.aFDB.doc(`${fuser.uid}/usuario`).valueChanges().subscribe((userModel: any) => {
+          const user = new UserModel(userModel);
+          const action = new SetUserAction(user);
+          this.store.dispatch(action);
+          console.log('Init auth user', userModel);
+        });
+      }
     });
   }
 

@@ -3,9 +3,15 @@ export class UserModel {
     public email: string;
     public uid: string;
 
-    constructor(nombre: string, email: string, uid: string) {
-        this.nombre = this.nombre;
-        this.email = this.email;
-        this.uid = this.uid;
+    constructor(userObj: DataObj) {
+        this.nombre = userObj && userObj.nombre || null;
+        this.email = userObj && userObj.email || null;
+        this.uid = userObj && userObj.uid || null;
     }
+}
+
+interface DataObj {
+    uid: string;
+    email: string;
+    nombre: string;
 }

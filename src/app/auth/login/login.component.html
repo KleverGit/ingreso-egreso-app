@@ -29,6 +29,7 @@
             </div>
             <div class="form-group">
               <button class="btn btn-primary submit-btn btn-block" [disabled]="form.invalid">Login</button>
+              <span *ngIf="cargando">Verificando credenciales ....</span>
             </div>
 
 
