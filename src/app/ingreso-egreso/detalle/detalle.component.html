@@ -1,33 +1,38 @@
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Detalle de ingreso egreso</h4>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Detalle de ingreso egreso</h4>
 
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Descripción</th>
-                  <th>Monto</th>
-                  <th>Tipo</th>
-                  <th></th>
-                </tr>
-              </thead>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Monto</th>
+              <th>Tipo</th>
+              <!--<th></th>-->
+            </tr>
+          </thead>
 
-              <tbody>
-                <tr>
-                  <td>Descripción</td>
-                  <td>Monto</td>
-                  <td>Tipo</td>
-                  <td>acciones</td>
-                </tr>
-              </tbody>
+          <tbody>
+            <tr *ngFor="let detalle of items">
+              <td>{{detalle.descripcion}}</td>
+              <td>$ {{detalle.monto}}</td>
+              <td> <span [ngClass]="{'text-success':tipo==='ingreso','text-danger':tipo==='egreso'}">
+                  {{detalle.tipo}}
+                </span>
+              </td>
+              <!--<td>acciones</td>-->
+              <button (click)="borrarItem(detalle.uid)" class="btn btn-sm btn-danger">
+                <i class="fa fa-trash"></i>
+              </button>
+            </tr>
+          </tbody>
 
-            </table>
+        </table>
 
 
-          </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
-  
