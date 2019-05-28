@@ -15,6 +15,8 @@ import { SetUserAction } from './auth.actions';
 })
 export class AuthService {
 
+  private userModel: UserModel;
+
   constructor(private fireAuth: AngularFireAuth, private router: Router,
     private aFDB: AngularFirestore, private store: Store<AppState>) { }
 
@@ -84,8 +86,11 @@ export class AuthService {
           const user = new UserModel(userModel);
           const action = new SetUserAction(user);
           this.store.dispatch(action);
+          this.userModel = user;
           console.log('Init auth user', userModel);
         });
+      } else {
+        this.userModel = null;
       }
     });
   }
@@ -99,6 +104,12 @@ export class AuthService {
         return fuser != null;
       })
     );
+  }
+
+  getUserModel() {
+    return {
+      ...this.userModel
+    };
   }
 
 }
