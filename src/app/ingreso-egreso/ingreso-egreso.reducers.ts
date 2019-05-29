@@ -1,9 +1,14 @@
 import * as fromIngresoegresoActions from './ingreso-egreso.actions';
 import { IngresoEgresoModel } from './ingreso-egreso.model';
+import { AppState } from '../app.reducer';
 
 // Interface de state inicial
 export interface IngresoEgresoState {
     items: IngresoEgresoModel[];
+}
+
+export interface AppStateIE extends AppState {
+    ingresoEgreso: IngresoEgresoState;
 }
 
 // implementacion estado inical

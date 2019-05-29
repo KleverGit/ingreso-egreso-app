@@ -8,7 +8,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
 import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.actions';
-import { SetUserAction } from './auth.actions';
+import { SetUserAction, DeleteUserAction } from './auth.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +65,7 @@ export class AuthService {
   }
 
   logout() {
+    this.store.dispatch(new DeleteUserAction());
     this.fireAuth.auth.signOut().then(resp => {
       console.log('Exito logout');
     }).catch(err => {

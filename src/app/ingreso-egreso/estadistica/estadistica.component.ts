@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.reducer';
 import { Subscription } from 'rxjs';
 import { IngresoEgresoModel } from '../ingreso-egreso.model';
+import { AppStateIE } from '../ingreso-egreso.reducers';
 
 @Component({
   selector: 'app-estadistica',
@@ -17,7 +18,7 @@ export class EstadisticaComponent implements OnInit {
   public contaregresos: number;
   public subscription: Subscription;
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppStateIE>) { }
 
   ngOnInit() {
     this.store.select('ingresoEgreso').subscribe(resp => {
